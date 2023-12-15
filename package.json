@@ -8,7 +8,7 @@
     "format:check": "prettier . --check",
     "format:fix": "prettier . --write",
     "lint": "eslint .",
-    "lint-fix": "eslint . --fix",
+    "lint:fix": "eslint . --fix",
     "prepare": "husky install"
   },
   "keywords": [],
@@ -30,5 +30,8 @@
       "npm run lint:fix",
       "npm run format:fix"
     ]
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
   }
 }
