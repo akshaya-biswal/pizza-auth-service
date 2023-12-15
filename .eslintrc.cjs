@@ -1,5 +1,3 @@
-// import eslintConfigPrettier from "eslint-config-prettier";
-
 module.exports = {
   extends: [
     "eslint:recommended",
@@ -17,3 +15,5 @@ module.exports = {
     "no-console": "error",
   },
 };
+
+// include: ["./.eslintrc.js"],
