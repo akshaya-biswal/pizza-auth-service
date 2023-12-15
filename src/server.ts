@@ -5,7 +5,6 @@ import { logger } from "./config/logger";
 const startServer = () => {
   const PORT = Config.PORT;
   try {
-    // throw new Error("Something went wrong");
     logger.debug("debug message", {});
     app.listen(PORT, () => logger.info(`Listening on PORT ${PORT}`));
   } catch (err: unknown) {
