@@ -37,5 +37,20 @@ describe("POST /auth/register ", () => {
         expect.stringContaining("json"),
       );
     });
+
+    it("Should presist the user in the database", async () => {
+      // Arrange
+      const userData = {
+        firstName: "Hello",
+        lastName: "World",
+        email: "hello@gmail.com",
+        password: "Secret",
+      };
+
+      // Act
+      await request(app).post("/auth/register").send(userData);
+
+      // Assert
+    });
   });
 });
