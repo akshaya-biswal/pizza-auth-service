@@ -79,7 +79,6 @@ describe("POST /auth/register ", () => {
       expect(users[0].firstName).toBe(userData.firstName);
       expect(users[0].lastName).toBe(userData.lastName);
       expect(users[0].email).toBe(userData.email);
-      expect(users[0].password).toBe(userData.password);
     });
 
     it("Should assign a customer role", async () => {
@@ -99,6 +98,26 @@ describe("POST /auth/register ", () => {
       const users = await userRepository.find();
       expect(users[0]).toHaveProperty("role");
       expect(users[0].role).toBe(Roles.CUSTOMER);
+    });
+
+    it("Should store the hashed password", async () => {
+      // Arrange
+      const userData = {
+        firstName: "Hello",
+        lastName: "World",
+        email: "hello@gmail.com",
+        password: "Secret",
+      };
+
+      // Act
+      await request(app).post("/auth/register").send(userData);
+
+      // Assert
+      const userRepository = connection.getRepository(User);
+      const users = await userRepository.find();
+      expect(users[0].password).not.toBe(userData.password);
+      expect(users[0].password).toHaveLength(60);
+      expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
     });
   });
 });
