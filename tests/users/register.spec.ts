@@ -5,8 +5,7 @@ import app from "../../src/app";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
 import { AppDataSource } from "../../src/config/data-source";
-import { isJWT } from "../utils";
-// import { truncateTable } from "../utils";
+import { isJwt } from "../utils";
 
 describe("POST /auth/register ", () => {
   let connection: DataSource;
@@ -18,7 +17,6 @@ describe("POST /auth/register ", () => {
   beforeEach(async () => {
     await connection.dropDatabase();
     await connection.synchronize();
-    // await truncateTable(connection);
   });
 
   afterAll(async () => {
@@ -175,11 +173,13 @@ describe("POST /auth/register ", () => {
         }
       });
 
+      // console.log("accessToken", accessToken);
+
       expect(accessToken).not.toBeNull();
       expect(refreshToken).not.toBeNull();
 
-      expect(isJWT(accessToken)).toBeTruthy();
-      expect(isJWT(refreshToken)).toBeTruthy();
+      expect(isJwt(accessToken)).toBeTruthy();
+      expect(isJwt(refreshToken)).toBeTruthy();
     });
   });
 

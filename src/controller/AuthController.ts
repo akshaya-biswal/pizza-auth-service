@@ -3,6 +3,8 @@
 - when ever we want to use it, we have to create a instance and after that we can use it. we are doing this to do "Dependency Injection"
 */
 
+import fs from "fs";
+import path from "path";
 import { Logger } from "winston";
 import { JwtPayload, sign } from "jsonwebtoken";
 import { NextFunction, Response } from "express";
@@ -10,6 +12,8 @@ import { NextFunction, Response } from "express";
 import { RegisterUserRequest } from "../types";
 import { UserService } from "../services/UserService";
 import { validationResult } from "express-validator";
+import createHttpError from "http-errors";
+import { Config } from "../config";
 
 export class AuthController {
   constructor(
@@ -41,7 +45,17 @@ export class AuthController {
 
       this.logger.info("User has been registered", { id: user.id });
 
-      const privateKey = "helloworld";
+      let privateKey: Buffer;
+      try {
+        privateKey = fs.readFileSync(
+          path.join(__dirname, "../../certs/private.pem"),
+        );
+      } catch (err) {
+        const error = createHttpError(500, "Error while reading private key");
+        next(error);
+        return;
+      }
+
       const payload: JwtPayload = {
         sub: String(user.id),
         role: user.role,
@@ -52,9 +66,10 @@ export class AuthController {
         expiresIn: "1h",
         issuer: "auth-service",
       });
-      const refreshToken = sign(payload, privateKey, {
+
+      const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET!, {
         algorithm: "RS256",
-        expiresIn: "1h",
+        expiresIn: "1y",
         issuer: "auth-service",
       });
 
