@@ -5,7 +5,26 @@ import app from "../../src/app";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
 import { AppDataSource } from "../../src/config/data-source";
-import { isJwt } from "../utils";
+// import { isJwt } from "../utils";
+
+const isJwt = (token: string | null): boolean => {
+  if (token === null) {
+    return false;
+  }
+  const parts = token.split(".");
+  if (parts.length !== 3) {
+    return false;
+  }
+
+  try {
+    parts.forEach((part) => {
+      Buffer.from(part, "base64").toString("utf-8");
+    });
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
 
 describe("POST /auth/register ", () => {
   let connection: DataSource;
@@ -25,7 +44,6 @@ describe("POST /auth/register ", () => {
 
   describe("Given all fields", () => {
     it("Should return the 201 status code", async () => {
-      // AAA
       // Arrange
       const userData = {
         firstName: "Hello",
@@ -141,14 +159,13 @@ describe("POST /auth/register ", () => {
       expect(users).toHaveLength(1);
     });
 
-    it("Should return the access and referesh token inside a cookie", async () => {
+    it("should return the access token and refresh token inside a cookie", async () => {
       // Arrange
       const userData = {
-        firstName: "Hello",
-        lastName: "World",
-        email: "hello@gmail.com",
-        password: "Secret",
-        role: Roles.CUSTOMER,
+        firstName: "Rakesh",
+        lastName: "K",
+        email: "rakesh@mern.space",
+        password: "password",
       };
 
       // Act
@@ -157,7 +174,6 @@ describe("POST /auth/register ", () => {
       interface Headers {
         ["set-cookie"]: string[];
       }
-
       // Assert
       let accessToken = null;
       let refreshToken = null;
@@ -168,12 +184,11 @@ describe("POST /auth/register ", () => {
         if (cookie.startsWith("accessToken=")) {
           accessToken = cookie.split(";")[0].split("=")[1];
         }
+
         if (cookie.startsWith("refreshToken=")) {
           refreshToken = cookie.split(";")[0].split("=")[1];
         }
       });
-
-      // console.log("accessToken", accessToken);
 
       expect(accessToken).not.toBeNull();
       expect(refreshToken).not.toBeNull();
