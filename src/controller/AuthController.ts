@@ -52,7 +52,11 @@ export class AuthController {
         expiresIn: "1h",
         issuer: "auth-service",
       });
-      const refreshToken = "asdajs";
+      const refreshToken = sign(payload, privateKey, {
+        algorithm: "RS256",
+        expiresIn: "1h",
+        issuer: "auth-service",
+      });
 
       res.cookie("accessToken", accessToken, {
         domain: "localhost",
