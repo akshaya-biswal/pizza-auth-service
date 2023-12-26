@@ -9,8 +9,6 @@ import { NextFunction, Response } from "express";
 
 import { RegisterUserRequest } from "../types";
 import { validationResult } from "express-validator";
-import { AppDataSource } from "../config/data-source";
-import { RefreshToken } from "../entity/RefreshToken";
 import { UserService } from "../services/UserService";
 import { TokenService } from "../services/TokenService";
 
@@ -52,12 +50,7 @@ export class AuthController {
       const accessToken = this.tokenService.generateAccessToken(payload);
 
       // Persist the refresh token
-      const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365;
-      const refreshTokenRepo = AppDataSource.getRepository(RefreshToken);
-      const newRefreshToken = await refreshTokenRepo.save({
-        user: user,
-        expiresAt: new Date(Date.now() + MS_IN_YEAR),
-      });
+      const newRefreshToken = await this.tokenService.presistRefreshToken(user);
 
       const refreshToken = this.tokenService.generateRefreshToken({
         ...payload,
