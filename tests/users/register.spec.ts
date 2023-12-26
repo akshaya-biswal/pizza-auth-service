@@ -5,6 +5,7 @@ import app from "../../src/app";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
 import { AppDataSource } from "../../src/config/data-source";
+import { RefreshToken } from "../../src/entity/RefreshToken";
 // import { isJwt } from "../utils";
 
 const isJwt = (token: string | null): boolean => {
@@ -195,6 +196,30 @@ describe("POST /auth/register ", () => {
 
       expect(isJwt(accessToken)).toBeTruthy();
       expect(isJwt(refreshToken)).toBeTruthy();
+    });
+
+    it("Should store the refresh token in the Database", async () => {
+      // Arrange
+      const userData = {
+        firstName: "Rakesh",
+        lastName: "K",
+        email: "rakesh@mern.space",
+        password: "password",
+      };
+
+      // Act
+      const response = await request(app).post("/auth/register").send(userData);
+
+      // Assert
+      const refreshTokenRepo = connection.getRepository(RefreshToken);
+      const tokens = await refreshTokenRepo
+        .createQueryBuilder("refreshToken")
+        .where("refreshToken.userId = :userId", {
+          userId: (response.body as Record<string, string>).id,
+        })
+        .getMany();
+
+      expect(tokens).toHaveLength(1);
     });
   });
 
