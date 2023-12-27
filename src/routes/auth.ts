@@ -1,13 +1,20 @@
 import express, { NextFunction, Request, Response } from "express";
 
-import { User } from "../entity/User";
+// Config
 import { logger } from "../config/logger";
 import { AppDataSource } from "../config/data-source";
+// Entiry
+import { User } from "../entity/User";
 import { RefreshToken } from "../entity/RefreshToken";
+// Validators
+import loginValidator from "../validators/login-validator";
+import registerValidator from "../validators/register-validator";
+// Services
 import { UserService } from "../services/UserService";
 import { TokenService } from "../services/TokenService";
+// Controller
 import { AuthController } from "../controller/AuthController";
-import registerValidator from "../validators/register-validator";
+import { CredentialService } from "../services/CredentialService";
 
 const authRouter = express.Router();
 
@@ -16,7 +23,13 @@ const refreshTokenRepository = AppDataSource.getRepository(RefreshToken);
 
 const userService = new UserService(userRepository);
 const tokenService = new TokenService(refreshTokenRepository);
-const authController = new AuthController(userService, logger, tokenService);
+const credentialService = new CredentialService();
+const authController = new AuthController(
+  logger,
+  userService,
+  tokenService,
+  credentialService,
+);
 
 authRouter.post(
   "/register",
@@ -24,6 +37,14 @@ authRouter.post(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   (req: Request, res: Response, next: NextFunction) =>
     authController.register(req, res, next),
+);
+
+authRouter.post(
+  "/login",
+  loginValidator,
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  (req: Request, res: Response, next: NextFunction) =>
+    authController.login(req, res, next),
 );
 
 export default authRouter;
