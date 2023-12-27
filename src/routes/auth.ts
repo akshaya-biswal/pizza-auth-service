@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 
+// Types
+import { AuthRequest } from "../types";
 // Config
 import { logger } from "../config/logger";
 import { AppDataSource } from "../config/data-source";
@@ -15,6 +17,7 @@ import { TokenService } from "../services/TokenService";
 // Controller
 import { AuthController } from "../controller/AuthController";
 import { CredentialService } from "../services/CredentialService";
+import authenticate from "../middlewares/authentiate";
 
 const authRouter = express.Router();
 
@@ -47,8 +50,9 @@ authRouter.post(
     authController.login(req, res, next),
 );
 
-authRouter.post("/self", (req: Request, res: Response) =>
-  authController.self(req, res),
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+authRouter.get("/self", authenticate, (req: Request, res: Response) =>
+  authController.self(req as AuthRequest, res),
 );
 
 export default authRouter;

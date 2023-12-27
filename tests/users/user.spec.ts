@@ -32,33 +32,43 @@ describe("GET /auth/self ", () => {
 
   describe("Given all fields", () => {
     it("Should return the 200 status code", async () => {
-      const response = await request(app).post("/auth/self").send();
+      const accessToken = jwks.token({
+        sub: "1",
+        role: Roles.CUSTOMER,
+      });
+      const response = await request(app)
+        .get("/auth/self")
+        .set("Cookie", [`accessToken=${accessToken}`])
+        .send();
       expect(response.statusCode).toBe(200);
     });
 
-    it("Should return the user data", async () => {
-      // Arrange
+    it("should return the user data", async () => {
+      // Register user
       const userData = {
-        firstName: "Hello",
-        lastName: "World",
-        email: "hello@gmail.com",
-        password: "root@1234",
+        firstName: "Rakesh",
+        lastName: "K",
+        email: "rakesh@mern.space",
+        password: "password",
       };
       const userRepository = connection.getRepository(User);
       const data = await userRepository.save({
         ...userData,
         role: Roles.CUSTOMER,
       });
-      // Generate Token
-      const accessToken = jwks.token({ sub: String(data.id), role: data.role });
+      // Generate token
+      const accessToken = jwks.token({
+        sub: String(data.id),
+        role: data.role,
+      });
 
       // Add token to cookie
       const response = await request(app)
         .get("/auth/self")
-        .set("Cookie", [`accessToken=${accessToken}`])
+        .set("Cookie", [`accessToken=${accessToken};`])
         .send();
-
-      // Asset
+      // Assert
+      // Check if user id matches with registered user
       expect((response.body as Record<string, string>).id).toBe(data.id);
     });
   });

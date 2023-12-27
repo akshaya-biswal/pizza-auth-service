@@ -8,7 +8,7 @@ import { JwtPayload } from "jsonwebtoken";
 import createHttpError from "http-errors";
 import { NextFunction, Response } from "express";
 
-import { RegisterUserRequest } from "../types";
+import { AuthRequest, RegisterUserRequest } from "../types";
 import { validationResult } from "express-validator";
 // Services
 import { UserService } from "../services/UserService";
@@ -158,7 +158,8 @@ export class AuthController {
     }
   }
 
-  self(req: RegisterUserRequest, res: Response) {
-    res.json({});
+  async self(req: AuthRequest, res: Response) {
+    const user = await this.userService.findById(Number(req.auth.sub));
+    res.json(user);
   }
 }

@@ -1,11 +1,11 @@
 import { Request } from "express";
-import JwksClient from "jwks-rsa";
+import jwksClient from "jwks-rsa";
 import { GetVerificationKey, expressjwt } from "express-jwt";
 
 import { Config } from "../config";
 
 export default expressjwt({
-  secret: JwksClient.expressJwtSecret({
+  secret: jwksClient.expressJwtSecret({
     jwksUri: Config.JWKS_URI!,
     cache: true,
     rateLimit: true,
