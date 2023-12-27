@@ -50,7 +50,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "hello@gmail.com",
-        password: "Secret",
+        password: "root@1234",
       };
 
       // Act
@@ -66,7 +66,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "hello@gmail.com",
-        password: "Secret",
+        password: "root@1234",
       };
 
       // Act
@@ -84,7 +84,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "hello@gmail.com",
-        password: "Secret",
+        password: "root@1234",
       };
 
       // Act
@@ -105,7 +105,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "hello@gmail.com",
-        password: "Secret",
+        password: "root@1234",
       };
 
       // Act
@@ -124,7 +124,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "hello@gmail.com",
-        password: "Secret",
+        password: "root@1234",
       };
 
       // Act
@@ -144,7 +144,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "hello@gmail.com",
-        password: "Secret",
+        password: "root@1234",
         role: Roles.CUSTOMER,
       };
 
@@ -230,7 +230,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "",
-        password: "Secret",
+        password: "root@1234",
       };
 
       // Act
@@ -251,7 +251,7 @@ describe("POST /auth/register ", () => {
         firstName: "Hello",
         lastName: "World",
         email: "  hello@gmail.com   ",
-        password: "Secret",
+        password: "root@1234",
       };
 
       // Act
